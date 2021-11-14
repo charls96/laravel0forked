@@ -30,6 +30,7 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $this->user->id,
             'password' => '',
+            'repeat_password' => 'present|same:password',
             'role' => [Rule::in(Role::getList())],
             'bio' => 'required',
             'twitter' => 'nullable|present|url',

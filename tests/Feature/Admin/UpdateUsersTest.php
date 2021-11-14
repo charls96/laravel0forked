@@ -18,6 +18,7 @@ class UpdateUsersTest extends TestCase
         'name' => 'Pepe',
         'email' => 'pepe@mail.es',
         'password' => '123456',
+        'repeat_password' => '123456',
         'profession_id' => '',
         'bio' => 'Programador de Laravel y Vue.js',
         'twitter' => 'https://twitter.com/pepe',
@@ -60,6 +61,7 @@ class UpdateUsersTest extends TestCase
             'name' => 'Pepe',
             'email' => 'pepe@mail.es',
             'password' => '123456',
+            'repeat_password' => '123456',
             'bio' => 'Programador de Laravel y Vue.js',
             'twitter' => 'https://twitter.com/pepe',
             'role' => 'admin',
@@ -161,8 +163,10 @@ class UpdateUsersTest extends TestCase
     }
 
     /** @test */
-    public function the_password_is_optional()
+    public function the_password_is_optional_as_the_repeat_password()
     {
+        $this->handleValidationExceptions();
+
         $oldPassword = 'CLAVE_ANTERIOR';
         $user = factory(User::class)->create([
             'password' => bcrypt($oldPassword),
@@ -170,7 +174,8 @@ class UpdateUsersTest extends TestCase
 
         $this->from('usuarios/' . $user->id . '/editar')
             ->put('usuarios/' . $user->id, $this->withData([
-                'password' => ''
+                'password' => '',
+                'repeat_password' => '',
             ]))->assertRedirect('usuarios/' . $user->id);
 
         $this->assertCredentials([
@@ -179,6 +184,21 @@ class UpdateUsersTest extends TestCase
             'password' => $oldPassword
         ]);
     }
+
+    /** @test */
+    public function the_repeat_password_must_be_the_same_as_the_password()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $this->from('usuarios/' . $user->id . '/editar')
+            ->put('usuarios/' . $user->id, $this->withData([
+                'repeat_password' => 'not-the-same-as-password'
+            ]))->assertSessionHasErrors(['repeat_password']);
+    }
+
+
 
     /** @test */
     public function the_user_email_can_stay_the_same()

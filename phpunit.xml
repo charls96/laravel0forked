@@ -30,6 +30,6 @@
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
-        <env name="DB_DATABASE" value="laravel0_test"/>
+        <env name="DB_DATABASE" value="laravelcrud_test"/>
     </php>
 </phpunit>

@@ -31,6 +31,7 @@ class CreateUserRequest extends FormRequest
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
+            'repeat_password' => 'required|same:password',
             'role' => [
                 'nullable',
                 Rule::in(Role::getList())

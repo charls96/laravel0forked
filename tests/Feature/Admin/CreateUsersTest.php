@@ -17,11 +17,13 @@ class CreateUsersTest extends TestCase
         'name' => 'Pepe',
         'email' => 'pepe@mail.es',
         'password' => '123456',
+        'repeat_password' => '123456',
         'profession_id' => '',
         'bio' => 'Programador de Laravel y Vue.js',
         'twitter' => 'https://twitter.com/pepe',
         'role' => 'user',
     ];
+
 
     /** @test */
     public function it_loads_the_new_users_page()
@@ -180,6 +182,29 @@ class CreateUsersTest extends TestCase
     }
 
     /** @test */
+    public function the_repeat_password_is_required()
+    {
+        $this->handleValidationExceptions();
+
+        $this->from('usuarios/crear')
+            ->post('usuarios', $this->withData([
+                'repeat_password' => ''
+            ]))->assertSessionHasErrors(['repeat_password']);
+    }
+
+    /** @test */
+    public function the_repeat_password_field_must_be_the_same_as_the_password_field()
+    {
+        $this->handleValidationExceptions();
+
+        $this->from('usuarios/crear')
+            ->post('usuarios', $this->withData([
+                'repeat_password' => 'not-the-same-as-password'
+            ]))->assertSessionHasErrors(['repeat_password']);
+    }
+
+
+    /** @test */
     public function the_profession_id_field_is_optional()
     {
         $this->post('usuarios', $this->withData([
@@ -272,5 +297,4 @@ class CreateUsersTest extends TestCase
                 'profession_id' => $deletedProfession->id
             ]))->assertSessionHasErrors(['profession_id']);
     }
-
 }

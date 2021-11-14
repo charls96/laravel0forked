@@ -13,6 +13,10 @@
     <input type="password" name="password" class="form-control">
 </div>
 <div class="form-group">
+    <label for="repeat_password">Repetir contraseña: </label>
+    <input type="password" name="repeat_password" class="form-control">
+</div> 
+<div class="form-group">
     <label for="bio">Biografía</label>
     <textarea type="text" name="bio" class="form-control">{{ old('bio', $user->profile->bio) }}</textarea>
 </div>
