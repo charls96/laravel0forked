@@ -30,13 +30,14 @@ class UpdateUserRequest extends FormRequest
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users,email,' . $this->user->id,
-            'password' => '',
+            'password' => 'present',
+            'repeat_password' => 'present|same:password',
             'role' => [Rule::in(Role::getList())],
             'bio' => 'required',
             'twitter' => 'nullable|present|url',
             'profession_id' => [
                 'nullable', 'present',
-                Rule::exists('professions','id')->whereNull('deleted_at')
+                Rule::exists('professions', 'id')->whereNull('deleted_at')
             ],
             'skills' => [
                 'array',

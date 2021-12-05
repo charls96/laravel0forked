@@ -19,6 +19,7 @@ class UpdateUsersTest extends TestCase
         'last_name' => 'Pérez',
         'email' => 'pepe@mail.es',
         'password' => '123456',
+        'repeat_password' => '123456',
         'profession_id' => '',
         'bio' => 'Programador de Laravel y Vue.js',
         'twitter' => 'https://twitter.com/pepe',
@@ -177,7 +178,7 @@ class UpdateUsersTest extends TestCase
     }
 
     /** @test */
-    public function the_password_is_optional()
+    public function the_password_and_the_repeat_password_are_optional()
     {
         $oldPassword = 'CLAVE_ANTERIOR';
         $user = factory(User::class)->create([
@@ -186,7 +187,8 @@ class UpdateUsersTest extends TestCase
 
         $this->from('usuarios/' . $user->id . '/editar')
             ->put('usuarios/' . $user->id, $this->withData([
-                'password' => ''
+                'password' => '',
+                'repeat_password' => '',
             ]))->assertRedirect('usuarios/' . $user->id);
 
         $this->assertCredentials([
@@ -194,6 +196,74 @@ class UpdateUsersTest extends TestCase
             'email' => 'pepe@mail.es',
             'password' => $oldPassword
         ]);
+    }
+
+    /** @test */
+    public function the_password_and_the_repeat_password_must_be_the_same()
+    {
+        $this->handleValidationExceptions();
+
+        $oldPassword = 'CLAVE_ANTERIOR';
+        $user = factory(User::class)->create([
+            'first_name' => 'Pepe',
+            'email' => 'pepe@mail.es',
+            'password' => bcrypt($oldPassword),
+        ]);
+
+        $this->from('usuarios/' . $user->id . '/editar')
+            ->put('usuarios/' . $user->id, $this->withData([
+                'password' => '123456',
+                'repeat_password' => 'not_the_same_as_password',
+            ]))->assertRedirect('usuarios/' . $user->id . '/editar')
+            ->assertSessionHasErrors(['repeat_password']);
+
+        $this->assertCredentials([
+            'first_name' => 'Pepe',
+            'email' => 'pepe@mail.es',
+            'password' => $oldPassword
+        ]);
+    }
+
+    /** @test */
+    public function the_password_field_must_be_present()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $this->from('usuarios/' . $user->id . '/editar')
+            ->put('usuarios/' . $user->id, [
+                'first_name' => 'Pepe',
+                'last_name' => 'Pérez',
+                'email' => 'pepe@mail.es',
+                'repeat_password' => '',
+                'profession_id' => '',
+                'bio' => 'Programador de Laravel y Vue.js',
+                'role' => 'user',
+                'state' => 'active',
+            ])->assertRedirect('usuarios/' . $user->id . '/editar')
+            ->assertSessionHasErrors(['password']);
+    }
+
+    /** @test */
+    public function the_repeat_password_field_must_be_present()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $this->from('usuarios/' . $user->id . '/editar')
+            ->put('usuarios/' . $user->id, [
+                'first_name' => 'Pepe',
+                'last_name' => 'Pérez',
+                'email' => 'pepe@mail.es',
+                'password' => '',
+                'profession_id' => '',
+                'bio' => 'Programador de Laravel y Vue.js',
+                'role' => 'user',
+                'state' => 'active',
+            ])->assertRedirect('usuarios/' . $user->id . '/editar')
+            ->assertSessionHasErrors(['repeat_password']);
     }
 
     /** @test */
