@@ -18,6 +18,7 @@ class CreateUserProfilesTable extends Migration
 
             $table->string('bio', 1000);
             $table->string('twitter')->nullable();
+            $table->string('github');
             $table->unsignedBigInteger('profession_id')->nullable();
             $table->foreign('profession_id')->references('id')->on('professions');
             $table->unsignedBigInteger('user_id')->unique();

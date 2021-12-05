@@ -35,6 +35,7 @@ class UpdateUserRequest extends FormRequest
             'role' => [Rule::in(Role::getList())],
             'bio' => 'required',
             'twitter' => 'nullable|present|url',
+            'github' => 'required|url',
             'profession_id' => [
                 'nullable', 'present',
                 Rule::exists('professions', 'id')->whereNull('deleted_at')
@@ -68,6 +69,7 @@ class UpdateUserRequest extends FormRequest
         $user->profile->update([
             'bio' => $this->bio,
             'twitter' => $this->twitter,
+            'github' => $this->github,
             'profession_id' => $this->profession_id
         ]);
 

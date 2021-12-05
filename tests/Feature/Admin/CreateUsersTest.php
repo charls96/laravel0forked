@@ -22,6 +22,7 @@ class CreateUsersTest extends TestCase
         'profession_id' => '',
         'bio' => 'Programador de Laravel y Vue.js',
         'twitter' => 'https://twitter.com/pepe',
+        'github' => 'https://github.com/pepe',
         'role' => 'user',
         'state' => 'active',
     ];
@@ -71,6 +72,7 @@ class CreateUsersTest extends TestCase
         $this->assertDatabaseHas('user_profiles', [
             'bio' => 'Programador de Laravel y Vue.js',
             'twitter' => 'https://twitter.com/pepe',
+            'github' => 'https://github.com/pepe',
             'user_id' => $user->id,
             'profession_id' => $profession->id,
         ]);
@@ -101,26 +103,6 @@ class CreateUsersTest extends TestCase
             ->assertRedirect('usuarios/crear');
 
         $this->assertDatabaseEmpty('users');
-    }
-
-    /** @test */
-    public function the_twitter_field_is_optional()
-    {
-        $this->post('usuarios', $this->withData([
-            'twitter' => null
-        ]))->assertRedirect('usuarios');
-
-        $this->assertCredentials([
-            'first_name' => 'Pepe',
-            'email' => 'pepe@mail.es',
-            'password' => '123456'
-        ]);
-
-        $this->assertDatabaseHas('user_profiles', [
-            'bio' => 'Programador de Laravel y Vue.js',
-            'twitter' => null,
-            'user_id' => User::findByEmail('pepe@mail.es')->id,
-        ]);
     }
 
     /** @test */
@@ -221,6 +203,49 @@ class CreateUsersTest extends TestCase
                 'password' => '123456',
                 'repeat_password' => 'not_same_as_password',
             ]))->assertSessionHasErrors(['repeat_password']);
+    }
+
+    /** @test */
+    public function the_twitter_field_is_optional()
+    {
+        $this->post('usuarios', $this->withData([
+            'twitter' => null
+        ]))->assertRedirect('usuarios');
+
+        $this->assertCredentials([
+            'first_name' => 'Pepe',
+            'email' => 'pepe@mail.es',
+            'password' => '123456'
+        ]);
+
+        $this->assertDatabaseHas('user_profiles', [
+            'bio' => 'Programador de Laravel y Vue.js',
+            'twitter' => null,
+            'user_id' => User::findByEmail('pepe@mail.es')->id,
+        ]);
+    }
+
+    /** @test */
+    public function the_github_field_is_required()
+    {
+        $this->handleValidationExceptions();
+
+        $this->from('usuarios/crear')
+            ->post('usuarios', $this->withData([
+                'github' => ''
+            ]))->assertSessionHasErrors(['github']);
+    }
+
+    /** @test */
+    public function the_github_field_must_be_an_url()
+    {
+        $this->handleValidationExceptions();
+
+        $this->from('usuarios/crear')
+        ->post('usuarios', $this->withData([
+            'github' => 'not_an_url'
+        ]))->assertRedirect('usuarios/crear')
+        ->assertSessionHasErrors(['github']);
     }
 
     /** @test */

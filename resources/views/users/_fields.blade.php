@@ -30,6 +30,11 @@
         placeholder="URL de tu usuario de Twitter">
 </div>
 <div class="form-group">
+    <label for="github">Github</label>
+    <input type="text" name="github" class="form-control" value="{{ old('github', $user->profile->github) }}"
+        placeholder="URL de tu usuario de Github">
+</div>
+<div class="form-group">
     <label for="profession_id">Profesión</label>
     <select name="profession_id" id="profession_id" class="form-control">
         <option value="">Selecciona una opción</option>
