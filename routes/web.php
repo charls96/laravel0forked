@@ -1,8 +1,6 @@
 <?php
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'UserController@index')->name('users.index');
 
 Route::get('usuarios', 'UserController@index')->name('users.index');
 Route::get('usuarios/crear', 'UserController@create')->name('users.create');

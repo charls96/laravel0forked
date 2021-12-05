@@ -18,6 +18,7 @@ class CreateUsersTest extends TestCase
         'last_name' => 'Pérez',
         'email' => 'pepe@mail.es',
         'password' => '123456',
+        'repeat_password' => '123456',
         'profession_id' => '',
         'bio' => 'Programador de Laravel y Vue.js',
         'twitter' => 'https://twitter.com/pepe',
@@ -199,6 +200,30 @@ class CreateUsersTest extends TestCase
     }
 
     /** @test */
+    public function the_repeat_password_is_required_with_the_password()
+    {
+        $this->handleValidationExceptions();
+
+        $this->from('usuarios/crear')
+            ->post('usuarios', $this->withData([
+                'password' => '123456',
+                'repeat_password' => '',
+            ]))->assertSessionHasErrors(['repeat_password']);
+    }
+
+    /** @test */
+    public function the_repeat_password_and_password_must_be_the_same()
+    {
+        $this->handleValidationExceptions();
+
+        $this->from('usuarios/crear')
+            ->post('usuarios', $this->withData([
+                'password' => '123456',
+                'repeat_password' => 'not_same_as_password',
+            ]))->assertSessionHasErrors(['repeat_password']);
+    }
+
+    /** @test */
     public function the_profession_id_field_is_optional()
     {
         $this->post('usuarios', $this->withData([
@@ -299,8 +324,8 @@ class CreateUsersTest extends TestCase
         $this->handleValidationExceptions();
 
         $this->post('usuarios', $this->withData([
-                'state' => 'invalid-state'
-            ]))->assertSessionHasErrors(['state']);
+            'state' => 'invalid-state'
+        ]))->assertSessionHasErrors(['state']);
 
         $this->assertDatabaseEmpty('users');
     }
