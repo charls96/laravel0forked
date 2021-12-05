@@ -23,6 +23,7 @@ class UpdateUsersTest extends TestCase
         'profession_id' => '',
         'bio' => 'Programador de Laravel y Vue.js',
         'twitter' => 'https://twitter.com/pepe',
+        'github' => 'https://github.com/pepe',
         'role' => 'user',
         'state' => 'active',
     ];
@@ -79,6 +80,7 @@ class UpdateUsersTest extends TestCase
             'user_id' => $user->id,
             'bio' => 'Programador de Laravel y Vue.js',
             'twitter' => 'https://twitter.com/pepe',
+            'github' => 'https://github.com/pepe',
             'profession_id' => $newProfession->id,
         ]);
 
@@ -282,6 +284,38 @@ class UpdateUsersTest extends TestCase
             'first_name' => 'Pepe',
             'email' => 'pepe@mail.es',
         ]);
+    }
+
+    /** @test */
+    public function the_github_field_is_required()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $this->from('usuarios/' . $user->id . '/editar')
+            ->put('usuarios/' . $user->id, $this->withData([
+                'github' => '',
+            ]))->assertRedirect('usuarios/' . $user->id . '/editar')
+            ->assertSessionHasErrors(['github']);
+
+        $this->assertDatabaseMissing('users', ['email' => 'pepe@mail.es']);
+    }
+
+    /** @test */
+    public function the_github_field_must_be_an_url()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $this->from('usuarios/' . $user->id . '/editar')
+            ->put('usuarios/' . $user->id, $this->withData([
+                'github' => 'not_an_url',
+            ]))->assertRedirect('usuarios/' . $user->id . '/editar')
+            ->assertSessionHasErrors(['github']);
+
+        $this->assertDatabaseMissing('users', ['email' => 'pepe@mail.es']);
     }
 
     /** @test */
