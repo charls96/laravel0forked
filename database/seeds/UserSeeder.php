@@ -47,6 +47,7 @@ class UserSeeder extends Seeder
 
         $admin->profile()->create([
             'bio' => 'Programador',
+            'github' => 'https://github.com/pepe',
             'profession_id' => $this->professions->where('title', 'Desarrollador Back-End')->first()->id,
         ]);
     }
