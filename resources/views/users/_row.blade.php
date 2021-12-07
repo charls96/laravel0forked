@@ -9,6 +9,7 @@
         <span class="note text-muted">{{ $user->team->name }}</span>
     </th>
     <td>{{ $user->email }}</td>
+    <td>{{ $user->profile->annual_salary ?: 'Sin salario'}}</td>
     <td>{{ $user->role }}</td>
     <td>
         <span class="note">Registro: {{ $user->created_at->format('d/m/Y') }}</span>
