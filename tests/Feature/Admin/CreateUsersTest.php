@@ -23,6 +23,7 @@ class CreateUsersTest extends TestCase
         'bio' => 'Programador de Laravel y Vue.js',
         'twitter' => 'https://twitter.com/pepe',
         'github' => 'https://github.com/pepe',
+        'annual_salary' => 10000,
         'role' => 'user',
         'state' => 'active',
     ];
@@ -75,6 +76,7 @@ class CreateUsersTest extends TestCase
             'github' => 'https://github.com/pepe',
             'user_id' => $user->id,
             'profession_id' => $profession->id,
+            'annual_salary' => 10000,
         ]);
 
         $this->assertDatabaseHas('skill_user', [
@@ -303,6 +305,49 @@ class CreateUsersTest extends TestCase
             ->post('usuarios', $this->withData([
                 'skills' => [$skillA->id, $skillB->id + 1]
             ]))->assertSessionHasErrors(['skills']);
+    }
+
+    /** @test */
+    public function the_annual_salary_field_is_optional()
+    {
+        $this->post('usuarios', $this->withData([
+            'annual_salary' => null
+        ]))->assertRedirect('usuarios');
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'pepe@mail.es',
+            'role' => 'user',
+        ]);
+    }
+
+    /** @test */
+    public function the_annual_salary_must_be_an_integer()
+    {
+        $this->handleValidationExceptions();
+
+        $this->post('usuarios', $this->withData([
+            'annual_salary' => 1200.123,
+        ]))->assertSessionHasErrors('annual_salary');
+    }
+
+    /** @test */
+    public function the_annual_salary_must_be_greater_than_0()
+    {
+        $this->handleValidationExceptions();
+
+        $this->post('usuarios', $this->withData([
+            'annual_salary' => -20,
+        ]))->assertSessionHasErrors('annual_salary');
+    }
+
+    /** @test */
+    public function the_annual_salary_must_be_less_than_100000()
+    {
+        $this->handleValidationExceptions();
+
+        $this->post('usuarios', $this->withData([
+            'annual_salary' => 100001,
+        ]))->assertSessionHasErrors('annual_salary');
     }
 
     /** @test */

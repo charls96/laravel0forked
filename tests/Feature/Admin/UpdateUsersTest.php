@@ -24,6 +24,7 @@ class UpdateUsersTest extends TestCase
         'bio' => 'Programador de Laravel y Vue.js',
         'twitter' => 'https://twitter.com/pepe',
         'github' => 'https://github.com/pepe',
+        'annual_salary' => 10000,
         'role' => 'user',
         'state' => 'active',
     ];
@@ -82,6 +83,7 @@ class UpdateUsersTest extends TestCase
             'twitter' => 'https://twitter.com/pepe',
             'github' => 'https://github.com/pepe',
             'profession_id' => $newProfession->id,
+            'annual_salary' => 10000,
         ]);
 
         $this->assertDatabaseCount('skill_user', 2);
@@ -332,6 +334,62 @@ class UpdateUsersTest extends TestCase
 
         $this->assertDatabaseEmpty('skill_user');
     }
+
+    /** @test */
+    public function the_annual_salary_field_is_optional()
+    {
+        $user = factory(User::class)->create();
+
+        $this->from('usuarios/' . $user->id . '/editar')
+        ->put('usuarios/' . $user->id, $this->withData([
+            'annual_salary' => null
+        ]))->assertRedirect('usuarios/' . $user->id);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'pepe@mail.es',
+            'role' => 'user',
+        ]);
+    }
+
+    /** @test */
+    public function the_annual_salary_must_be_an_integer()
+    {
+        $this->handleValidationExceptions();
+        
+        $user = factory(User::class)->create();
+
+        $this->from('usuarios/' . $user->id . '/editar')
+        ->put('usuarios/' . $user->id, $this->withData([
+            'annual_salary' => 1200.123,
+        ]))->assertSessionHasErrors('annual_salary');
+    }
+
+    /** @test */
+    public function the_annual_salary_must_be_greater_than_0()
+    {
+        $this->handleValidationExceptions();
+        
+        $user = factory(User::class)->create();
+
+        $this->from('usuarios/' . $user->id . '/editar')
+        ->put('usuarios/' . $user->id, $this->withData([
+            'annual_salary' => -20,
+        ]))->assertSessionHasErrors('annual_salary');
+    }
+
+    /** @test */
+    public function the_annual_salary_must_be_less_than_100000()
+    {
+        $this->handleValidationExceptions();
+        
+        $user = factory(User::class)->create();
+
+        $this->from('usuarios/' . $user->id . '/editar')
+        ->put('usuarios/' . $user->id, $this->withData([
+            'annual_salary' => 100001,
+        ]))->assertSessionHasErrors('annual_salary');
+    }
+
 
     /** @test */
     public function the_state_is_required()

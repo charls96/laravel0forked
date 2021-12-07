@@ -1,6 +1,6 @@
 <?php
 
-use App\{Profession, Skill, Team, User};
+use App\{Profession, Skill, Team, User, UserProfile};
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -49,6 +49,7 @@ class UserSeeder extends Seeder
             'bio' => 'Programador',
             'github' => 'https://github.com/pepe',
             'profession_id' => $this->professions->where('title', 'Desarrollador Back-End')->first()->id,
+            'annual_salary' => 10000,
         ]);
     }
 
@@ -62,10 +63,12 @@ class UserSeeder extends Seeder
 
         $user->skills()->attach($this->skills->random(rand(0, 7)));
 
+
+
         $user->profile()->update(
             factory(App\UserProfile::class)->raw([
                 'profession_id' => rand(0, 2) ? $this->professions->random()->id : null,
-            ])
+            ]),
         );
     }
 }

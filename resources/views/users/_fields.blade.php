@@ -46,6 +46,11 @@
     </select>
 </div>
 
+<div class="form-group">
+    <label for="annual_salary">Salario Anual</label>
+    <input type="number" name="annual_salary" class="form-control" value="{{ old('annual_salary', $user->profile->annual_salary) }}">
+</div>
+
 <h5>Habilidades</h5>
 
 @foreach ($skills as $skill)

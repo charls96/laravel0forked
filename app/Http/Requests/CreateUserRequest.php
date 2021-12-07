@@ -44,6 +44,7 @@ class CreateUserRequest extends FormRequest
                 'nullable', 'present',
                 Rule::exists('professions','id')->whereNull('deleted_at')
             ],
+            'annual_salary' => 'nullable|integer|min:0|max:100000',
             'skills' => [
                 'array',
                 Rule::exists('skills', 'id'),
@@ -81,7 +82,8 @@ class CreateUserRequest extends FormRequest
                 'bio' => $this->bio,
                 'twitter' => $this->twitter,
                 'github' => $this->github,
-                'profession_id' => $this->profession_id
+                'profession_id' => $this->profession_id,
+                'annual_salary' => $this->annual_salary,
             ]);
 
             $user->skills()->attach($this->skills ?? []);
