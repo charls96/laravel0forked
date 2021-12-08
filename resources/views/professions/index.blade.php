@@ -13,6 +13,7 @@
             <th scope="col">#</th>
             <th scope="col">Título</th>
             <th scope="col">Perfiles</th>
+            <th scope="col">Salario medio</th>
             <th scope="col">Acciones</th>
         </tr>
         </thead>
@@ -21,9 +22,12 @@
             <tr>
                 <th scope="row">{{ $profession->id }}</th>
                 <td>{{ $profession->title }}</td>
-                <td>{{ $profession->profiles_count }}</td>
+                {{-- <td>{{ $profession->profiles_count }}</td> --}}
+                <td>{{ $profession->profiles->count() }}</td>
+                <td>{{ round($profession->profiles->avg('annual_salary'), 0) }}</td>
                 <td>
-                    @if( ! $profession->profiles_count)
+                    {{-- @if( ! $profession->profiles_count) --}}
+                    @if( ! $profession->profiles->count() )
                         <form action="{{ url('profesiones/' . $profession->id) }}" method="POST">
                             @csrf
                             @method('DELETE')

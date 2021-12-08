@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Profession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProfessionController extends Controller
 {
     public function index()
     {
         return view('professions.index', [
-            'professions' => Profession::withCount('profiles')->orderBy('title')->get(),
+            /* 'professions' => Profession::withCount('profiles')->orderBy('title')->get(), */
+            'professions' => Profession::with('profiles:annual_salary,profession_id')->orderBy('title')->get(),
         ]);
     }
 
