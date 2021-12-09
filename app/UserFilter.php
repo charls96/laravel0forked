@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -17,6 +18,7 @@ class UserFilter extends QueryFilter
             'skills' => 'array|exists:skills,id',
             'from' => 'date_format:d/m/Y',
             'to' => 'date_format:d/m/Y',
+            'salary' => 'nullable'
         ];
     }
 
@@ -61,5 +63,17 @@ class UserFilter extends QueryFilter
         $date = Carbon::createFromFormat('d/m/Y', $date);
 
         $query->whereDate('created_at', '<=', $date);
+    }
+
+    public function salary($query, $salary){
+        if ($salary === 'with_salary') {
+            return $query->whereHas('profile', function (Builder $query) {
+                $query->whereNotNull('annual_salary');
+               })->get();
+        } elseif ($salary === 'without_salary') {
+            return $query->whereHas('profile', function (Builder $query) {
+                $query->where('annual_salary', '=', null);
+               })->get();
+        }
     }
 }
