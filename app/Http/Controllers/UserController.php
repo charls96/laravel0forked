@@ -9,15 +9,17 @@ use App\Skill;
 use App\User;
 use App\UserFilter;
 use App\UserProfile;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 
 class UserController extends Controller
 {
     public function index(UserFilter $userFilter)
     {
         $users = User::query()
-            ->with('team', 'skills', 'profile.profession')
+            ->with('team', 'skills', 'profile.profession', 'profile:annual_salary,user_id')
             ->when(request('team'), function ($query, $team) {
                 if ($team === 'with_team') {
                     $query->has('team');
@@ -25,7 +27,18 @@ class UserController extends Controller
                     $query->doesntHave('team');
                 }
             })
-            ->filterBy($userFilter, request()->only(['state', 'role', 'search', 'skills', 'from', 'to']))
+            /* ->when(request('profile'), function ($query, $salary) {
+                if ($salary === 'with_salary') {
+                    $query->whereHas('profile', function (Builder $query) {
+                        $query->whereNotNull('annual_salary');
+                       })->get();
+                } elseif ($salary === 'without_salary') {
+                    $query->whereHas('profile', function (Builder $query) {
+                        $query->where('annual_salary', '=', null);
+                       })->get();
+                }
+            }) */
+            ->filterBy($userFilter, request()->only(['state', 'role', 'search', 'skills', 'from', 'to', 'salary']))
             ->orderBy('created_at', 'DESC')
             ->paginate();
 

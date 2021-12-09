@@ -22,6 +22,17 @@
         </div>
     </div>
     <div class="row row-filters">
+        <div class="col-12">
+            @foreach(['' => 'Todos', 'with_salary' => 'Con salario', 'without_salary' => 'Sin salario'] as $value => $text)
+            <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" name="salary" id="salary_{{ $value ?: 'all' }}"
+                       value="{{ $value }}" {{ $value === request('salary', '') ? 'checked' : '' }}>
+                <label class="form-check-label" for="salary_{{ $value ?: 'all' }}">{{ $text }}</label>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    <div class="row row-filters">
         <div class="col-md-6">
             <div class="form-inline form-search">
                 <div class="input-group">

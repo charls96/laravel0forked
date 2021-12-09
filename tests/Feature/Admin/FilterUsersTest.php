@@ -155,6 +155,52 @@ class FilterUsersTest extends TestCase
             ->notContains($newUser);
     }
 
+    /** @test */
+    public function filter_users_without_salary()
+    {
+        $userWithSalary = factory(User::class)->create();
+
+        $userWithoutSalary = factory(User::class)->create();
+
+        $userWithoutSalary->profile->update([
+            'annual_salary' => null
+        ]);
+
+        $userWithSalary->profile->update([
+            'annual_salary' => 10000,
+        ]);
+
+
+        $response = $this->get('usuarios?salary=without_salary');
+
+        $response->assertViewCollection('users')
+            ->contains($userWithoutSalary)
+            ->notContains($userWithSalary);
+    }
+
+    /** @test */
+    public function filter_users_with_salary()
+    {
+        $userWithSalary = factory(User::class)->create();
+
+        $userWithoutSalary = factory(User::class)->create();
+
+        $userWithoutSalary->profile->update([
+            'annual_salary' => null
+        ]);
+
+        $userWithSalary->profile->update([
+            'annual_salary' => 10000,
+        ]);
+
+
+        $response = $this->get('usuarios?salary=with_salary');
+
+        $response->assertViewCollection('users')
+            ->notContains($userWithoutSalary)
+            ->contains($userWithSalary);
+    }
+
 
 
 }
