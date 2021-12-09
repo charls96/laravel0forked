@@ -19,7 +19,7 @@ class UserController extends Controller
     public function index(UserFilter $userFilter)
     {
         $users = User::query()
-            ->with('team', 'skills', 'profile.profession', 'profile:annual_salary,user_id')
+            ->with('team', 'skills', 'profile.profession')
             ->when(request('team'), function ($query, $team) {
                 if ($team === 'with_team') {
                     $query->has('team');
