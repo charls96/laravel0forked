@@ -13,15 +13,20 @@ class ProfessionSeeder extends Seeder
     public function run()
     {
         Profession::create([
-            'title' => 'Desarrollador Back-End'
+            'title' => 'Desarrollador Back-End',
+            'created_at' => now()->subDays(rand(1,90)),
         ]);
         Profession::create([
-            'title' => 'Desarrollador Front-End'
+            'title' => 'Desarrollador Front-End',
+            'created_at' => now()->subDays(rand(1,90)),
         ]);
         Profession::create([
-            'title' => 'Diseñador Web'
+            'title' => 'Diseñador Web',
+            'created_at' => now()->subDays(rand(1,90)),
         ]);
 
-        factory(Profession::class, 7)->create();
+        factory(Profession::class, 7)->create([
+            'created_at' => now()->subDays(rand(1,90)),
+        ]);
     }
 }
