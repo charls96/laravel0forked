@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProfessionRequest;
 use App\Profession;
 use App\ProfessionFilter;
 use Illuminate\Http\Request;
@@ -21,6 +22,36 @@ class ProfessionController extends Controller
 
         return view('professions.index', [
            'professions' => $professions
+        ]);
+    }
+
+    public function show(Profession $profession)
+    {
+        if ($profession == null) {
+            return response()->view('errors.404', [], 404);
+        }
+
+        return view('professions.show', compact('profession'));
+    }
+
+    public function edit(Profession $profession)
+    {
+        return $this->form('professions.edit', $profession);
+    }
+
+    public function update(UpdateProfessionRequest $request, Profession $profession)
+    {
+        $request->updateProfession($profession);
+
+        return redirect()->route('professions.show', $profession);
+    }
+
+    
+
+    protected function form($view, Profession $profession)
+    {
+        return view($view, [
+            'profession' => $profession,
         ]);
     }
 
