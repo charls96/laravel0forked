@@ -18,6 +18,10 @@ Route::get('editar-perfil', 'ProfileController@edit');
 Route::put('editar-perfil', 'ProfileController@update');
 
 Route::get('profesiones', 'ProfessionController@index')->name('professions.index');
+Route::get('profesiones/{profession}/editar', 'ProfessionController@edit')->name('profession.edit');
+Route::put('profesiones/{profession}', 'ProfessionController@update')->name('profession.update');
+Route::get('profesiones/{profession}', 'ProfessionController@show')
+    ->where('id', '[0-9]+')->name('professions.show');
 Route::delete('profesiones/{profession}', 'ProfessionController@destroy');
 
 Route::get('habilidades', 'SkillController@index')->name('skills.index');
