@@ -5,9 +5,10 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
 class Profession extends Model
 {
-    //use SoftDeletes;
+    use SoftDeletes;
 
     protected $fillable = ['title', 'created_at'];
 
