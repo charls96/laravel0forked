@@ -8,6 +8,15 @@
         <h1 class="pb-1">Listado de profesiones</h1>
     </div>
 
+    <p>
+       
+            <a href="{{ route('professions.trashed') }}" class="btn btn-outline-dark">Ver papelera</a>
+            <a href="{{ route('professions.create') }}" class="btn btn-primary">Nueva profesión</a>
+        
+            {{-- <a href="{{ route('professions.index') }}" class="btn btn-outline-dark">Regresar al listado de usuarios</a> --}}
+        
+    </p>
+
     @include('professions._filters')
 
     <table class="table">
